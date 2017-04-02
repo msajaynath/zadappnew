@@ -1,0 +1,15 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>{{"Categories" | translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content style="background-color: #f4f6f7">
+  <ion-card (click)="CategoryClicked($event, item)" class="cookBook-background-page" *ngFor="let item of Categories">
+    <img style="height: 125px;" src={{item.CategoryImageUrl}}>
+    <div class="Category-title">{{item.CategoryNameEn}}</div>
+  </ion-card>
+</ion-content>

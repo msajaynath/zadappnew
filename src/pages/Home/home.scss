@@ -1,0 +1,41 @@
+.card-background-page {
+    position: relative;  
+    
+}
+
+.card-Ingerigent-TextHome {
+    padding: 3%;
+    position: absolute;
+    top: 75%;
+    font: 14px Sans-Serif;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.35);
+    color: #fff;
+    height: 25%;
+}
+
+.card-Ingerigent-Icon {
+    position: absolute;
+    top: 2%;
+    font: 14px Sans-Serif;
+    width: 10%;
+    background: rgba(0, 0, 0, 0.35);
+    color: #fff;
+    height: 10%;
+    text-align: center;
+    margin-left: 88%
+}
+
+.RecipieName{
+    font-size: 16px;
+    color: White;
+}
+
+.RecipieDetail{
+    font-size: 13px;
+    color: mintcream;
+}
+
+.toolbar-background {
+  background-color: lightgray;
+}

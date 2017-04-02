@@ -1,0 +1,68 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title style="display: block;margin-top:4%;width: 60%;float: left;">{{"Profile" | translate}}</ion-title>
+    <i *ngIf="!IsViewOtherProfile" (click)="EditProfile($event)" class="fa fa-pencil-square-o" aria-hidden="true"></i>
+
+    <button *ngIf="!IsViewOtherProfile" (click)="Logout()" style="display: block;float: right;" ion-button>Logout</button>
+  </ion-navbar>
+</ion-header>
+
+<ion-content *ngIf="userId.length > 0">
+  <ion-card>
+    <div style="background-color: #47455b;color: gold;font-family:Times New Roman"><br />
+      <img class="item-profile"  src="assets/Profile/profile.jpg">
+      <div style="text-align: center">{{profileInfo.Name}}</div>
+      <div style="text-align: center">{{profileInfo.JobDescription}}</div>
+      <br/>
+      <ion-grid>
+        <ion-row>
+          <ion-col width-33 class="borderTop borderRight">
+            <div>Recipie</div>
+            <div>{{profileInfo.UserRecipies.length}}</div>
+           </ion-col>
+          <ion-col width-33 class="borderTop borderRight">
+            <div>Followers</div>
+            <div>{{profileInfo.Followers.length}}</div>  
+           </ion-col>          
+          <ion-col width-33 class="borderTop">
+            <div>Following</div>
+            <div>{{profileInfo.Following.length}}</div>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+    <ion-card-header style="background-color: #e3e6ea">
+      <span style="display: block;width: 20%;float: left">Private</span>
+      <ion-toggle [(ngModel)]="profileInfo.ISPrivate" style="float: right"></ion-toggle>
+    </ion-card-header>
+    <ion-card-header style="background-color: #e3e6ea">
+      Contact-ME
+    </ion-card-header>
+    <ion-list>
+      <ion-item>
+        <ion-icon name="mail" item-left></ion-icon>
+          {{profileInfo.Email}}
+      </ion-item>
+      <ion-item>      
+        <ion-icon name="contact" item-left></ion-icon>
+        {{profileInfo.PhoneNumber}}
+      </ion-item>
+    </ion-list>   
+    <ion-card-header *ngIf="!IsViewOtherProfile" style="background-color: #e3e6ea">
+      Language Preference
+    </ion-card-header>   
+    <ion-list *ngIf="!IsViewOtherProfile" >
+      <ion-item> 
+      <span (click)="changeLanguage('ar')"  style="margin-right: 20px; display: block; float: left;"><img src='assets/LanguageIcon/Arabic.jpg' style="height: 25px;width: 25px;"></span>
+      <span (click)="changeLanguage('en')"><img src='assets/LanguageIcon/English.png' style="height:25px;width: 25px;"></span>
+      </ion-item>
+    </ion-list>
+    <ion-card-header style="background-color: #e3e6ea">
+      <span>My Recipies</span>
+      <span style="float: right"><button (click)="MyRecipiesList($event, 'item')" ion-button>My Recipies</button></span>
+    </ion-card-header>
+  </ion-card>
+</ion-content>

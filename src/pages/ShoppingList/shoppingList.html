@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>{{"Shopping List" | translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <img  src="assets/shopping/image.jpg"/>
+  <ion-item-group *ngFor="let item of shoppingList let ind =index;" color="light">
+    <ion-item-divider style="background-color: aqua">
+      <img  style="width: 18%" src={{item.RecipieImageUrl}}/> 
+      <span>{{item.RecipieName}}</span>
+      <span style="float: right;"> 
+        <ion-icon (click)="ClearAllIngredents(ind)" name="add-circle" style="color: brown"></ion-icon>
+      </span>
+    </ion-item-divider>
+    <ion-item *ngFor="let ing of item.Ingredents let index =index; 
+      let odd=odd; let even=even" 
+      [class.odd]="odd" 
+      [class.even]="even">
+      <ion-checkbox [ngModel]="ing.Purchased"></ion-checkbox>
+      <ion-label>{{ing.IngredentName}}</ion-label>
+    </ion-item>
+  </ion-item-group>
+</ion-content>
