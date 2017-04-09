@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import { ProfileDetails, ProfileInfo, GroupDetails } from '../Models/ProfileDetails'
+import { ProfileDetails, ProfileInfo,GroupDetails } from '../Models/ProfileDetails'
 import {   Http } from '@angular/http';
 
 @Injectable()
@@ -15,12 +15,12 @@ export class UserService {
 constructor( private http: Http){
 		this.Url = "https://pacific-mesa-18419.herokuapp.com/zadapi/v1/users/" ;
   }
-	SaveUser(UserInfo) {	
+	SaveUser(UserInfo,type) {	
 		// this.text = 'User Saved Successfully'
 		// return Promise.resolve(this.text);
+debugger;
 
-
-		return new Promise(resolve=>{  this.http.post(this.Url + 'signup', UserInfo)
+		return new Promise(resolve=>{  this.http.post(this.Url + type, UserInfo)
         .subscribe(data => {
             resolve(data.json());
         }, error => {

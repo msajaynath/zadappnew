@@ -1,11 +1,14 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, ActionSheetController, ToastController, Platform, LoadingController } from 'ionic-angular';
-import { Camera } from 'ionic-native';
+import { Camera,File } from 'ionic-native';
+
 import { Storage } from '@ionic/storage';
 import { CommonServices } from '../service/generalservices';
 import { RecipieService } from '../service/RecipieServices';
 import { CreateRecipieModel } from '../Models/createrecipiemodel'
 import { Login } from '../login/Login';
+import { TranslateService } from 'ng2-translate/ng2-translate';
+declare var window: any;
 
 declare var require: any
 require('aws-sdk/dist/aws-sdk');
@@ -21,6 +24,10 @@ export class CreateRecipie {
   noOfIngredents: number;
   resultCreatedText: any;
   resultText: String;
+  awsSecret:String;
+  awsKey:String;
+  Ingredents : Array<{ingredent:string}>;
+  Directions : Array<{direction:string}>;
   LookUp: Array<{
     CategoryTag: Array<{ Id: string, CategoryNameEn: string, CategoryNameAr: string }>,
     CookingTypeTag: Array<{ Id: string, CookingTypeNameEn: string, CookingTypeNameAr: string }>,
@@ -29,18 +36,27 @@ export class CreateRecipie {
     Calories: Array<{ Id: string, CaloriesNameEn: string, CaloriesNameAr: string }>
   }>;
   createRecipie;
+  currentLanguage: string;
+  options:any;
 
-
-  constructor(public navCtrl: NavController, public storage: Storage, public recipieService: RecipieService, public commonServices: CommonServices, public navParams: NavParams, public actionSheetCtrl: ActionSheetController, public toastCtrl: ToastController, public platform: Platform, public loadingCtrl: LoadingController) {
-    this.createRecipie = new CreateRecipieModel('', '', '', '', '', [], [], 0, '', [], '', '', '');
+  constructor(public navCtrl: NavController,public translate: TranslateService, public storage: Storage, public recipieService: RecipieService, public commonServices: CommonServices, public navParams: NavParams, public actionSheetCtrl: ActionSheetController, public toastCtrl: ToastController, public platform: Platform, public loadingCtrl: LoadingController) {
+   this.awsKey="";
+    this.awsSecret="";
+     this.currentLanguage = this.translate.currentLang;
+    this.createRecipie = new CreateRecipieModel('', '', '', '', '', [], [], 0, '', [],[], '', '', '');
     this.resultText = '';
+    this.Ingredents =[];
+    this.Directions =[];
+    this.options = {};
     this.storage.ready().then(() => {
       this.storage.get('LoggedInUserId').then((val) => {
 
         if (val == null) {
+          this.options.PageName = 'CreateRecipie';
+          this.options.UserId = val;
           this.navCtrl.setPages([
-            { page: Login }
-          ])
+					{page:Login, params: {'params': this.options}}
+				])
         }
         else if (val.length > 0) {
           this.noOfIngredents = 0;
@@ -48,59 +64,121 @@ export class CreateRecipie {
             this.LookUp = val;
             this.resultText = this.LookUp[0].CategoryTag[0].CategoryNameEn;
           });
+          this.storage.get('LoggedInUserDetails').then((info) => { 
+            this.createRecipie.MakerId = info.id;
+          this.createRecipie.MakerName = info.Name;
+          }); 
         }
-      });
-      this.storage.get('LoggedInUserId').then((userId) => {
-        this.storage.get('LoggedInUserFirstName').then((Username) => {
-          this.createRecipie.MakerId = userId;
-          this.createRecipie.MakerName = Username;
-          //alert(JSON.stringify(this.createRecipie));
-
-        });
       });
     });
 
   }
 
-  changeIngredents() {
-    for (let i = 0; i < this.noOfIngredents; i++) {
-      this.createRecipie.Ingredents.push({ ingredent: '' })
-    }
+  AddIngredents() {
+    this.Ingredents.push({ ingredent: '' })
   }
   AddPhotos() {
     this.createRecipie.PhotosList.push({ s3Url: "assets/Images/BeefRoast.jpg", isPrimary: true });
   }
   SaveRecipieDetails() {
+    let isValid = true;
+    if(this.createRecipie.RecipeName.length == 0){
+      this.presentToast("Please add Recipie Name");
+      isValid = false
+    }
+    else if(this.createRecipie.RecipeDescription.length == 0){
+      this.presentToast("Please add Recipe Description");
+      isValid = false
+    }
+    else if(this.createRecipie.Time.length == 0){
+      this.presentToast("Please add Time to cook");
+      isValid = false
+    }
+    else if(this.createRecipie.Calories.length == 0){
+      this.presentToast("Please add approxmiate calorie value");
+      isValid = false
+    }
+    else if(this.Ingredents.length == 0){
+      this.presentToast("Please add atleast one ingredent");
+      isValid = false
+    }    
+    else if(this.Directions.length == 0){
+      this.presentToast("Please add atleast one Direction");
+      isValid = false
+    }
+    else if(this.createRecipie.Category.length == 0){
+      this.presentToast("Please add a Category");
+      isValid = false
+    }
+    else if(this.createRecipie.CookingType.length == 0){
+      this.presentToast("Please add Cooking Type");
+      isValid = false
+    }
+    else if(this.createRecipie.Cusine.length == 0){
+      this.presentToast("Please add Cusine");
+      isValid = false
+    }
 
+    if(this.Ingredents.length > 0){
+       this.createRecipie.Ingredents = [];
+      for(let i = 0; i < this.Ingredents.length; i ++)
+        this.createRecipie.Ingredents.push(this.Ingredents[i].ingredent);
+    }
+
+    if(this.Directions.length > 0){
+      this.createRecipie.Directions = [];
+      for(let i = 0; i < this.Directions.length; i ++)
+        this.createRecipie.Directions.push(this.Directions[i].direction);
+    }
+    alert(JSON.stringify(this.createRecipie));
 
     this.recipieService.SaveRecipie(this.createRecipie).then((resultCreatedText: any) => {
-      debugger;
       this.resultCreatedText = resultCreatedText;
 
       if (this.resultCreatedText.status == true) {
-        alert(this.resultCreatedText.message)
+        this.presentToast(this.resultCreatedText.message)
 
       }
       else
-        alert(this.resultCreatedText.message)
+         this.presentToast(this.resultCreatedText.message)
     });
   }
 
   closeIngredent(item) {
-    this.createRecipie.Ingredents.splice(item, 1);
-    this.noOfIngredents = this.noOfIngredents - 1;
+    this.Ingredents.splice(item, 1);
   }
 
   AddMoreSteps() {
-    this.createRecipie.Directions.push({ Direction: '' });
+    this.Directions.push({ direction: '' });
   }
 
   closeSteps(i) {
-    this.createRecipie.Directions.splice(i, 1);
+    this.Directions.splice(i, 1);
   }
 
 
-  private presentActionSheet() {
+  private presentVideoActionSheet() {
+    let actionSheet = this.actionSheetCtrl.create({
+      title: 'Select Video Source',
+      buttons: [
+        {
+          text: 'Load from Library',
+          handler: () => {
+            this.takeVideo(Camera.PictureSourceType.PHOTOLIBRARY);
+          }
+        },
+
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        }
+      ]
+    });
+    actionSheet.present();
+  }
+
+
+   private presentActionSheet() {
     let actionSheet = this.actionSheetCtrl.create({
       title: 'Select Image Source',
       buttons: [
@@ -116,6 +194,7 @@ export class CreateRecipie {
             this.takePicture(Camera.PictureSourceType.CAMERA);
           }
         },
+        
         {
           text: 'Cancel',
           role: 'cancel'
@@ -127,11 +206,13 @@ export class CreateRecipie {
 
   private takePicture(sourceType) {
     var options = {
-      quality: 10,
+      quality: 70,
       sourceType: sourceType,
       saveToPhotoAlbum: false,
       correctOrientation: true,
-      destinationType: Camera.DestinationType.DATA_URL
+      destinationType: Camera.DestinationType.DATA_URL,
+      targetWidth:640,
+      targetHeight:480
     };
 
     // Get the data of an image
@@ -141,6 +222,40 @@ export class CreateRecipie {
     }, (err) => {
       this.presentToast('Error while selecting image.');
     });
+  }
+public videoOptions: any = {
+      sourceType: Camera.PictureSourceType.SAVEDPHOTOALBUM,
+      mediaType: Camera.MediaType.ALLMEDIA,
+      destinationType: Camera.DestinationType.FILE_URI
+}
+
+ private takeVideo(sourceType) {
+
+/////
+Camera.getPicture(this.videoOptions).then( (fileUri: any) => {
+     // alert('File URI: ' + JSON.stringify(fileUri));
+      window.resolveLocalFileSystemURL('file://' + fileUri, (fileEntry) => {
+       // alert('Type: ' + (typeof fileEntry));
+         fileEntry.file( (file) => {
+         // alert('File: ' + (typeof file) + ', ' + JSON.stringify(file));
+           const fileReader = new FileReader();
+           
+           fileReader.onloadend = (result: any) => {
+           //  alert('File Reader Result: ' + JSON.stringify(result));
+             let arrayBuffer = result.target.result;
+             this.uploadVideo(arrayBuffer);
+           };
+
+           fileReader.onerror = (error: any) => {
+             //alert(error);
+           };
+        fileReader.readAsArrayBuffer(file);
+
+         });
+      });
+});
+
+
   }
 
   private presentToast(text) {
@@ -159,16 +274,17 @@ export class CreateRecipie {
     loading.present();
 
     var AWSService = (<any>window).AWS;
-    ///var image="data:image/gif;base64,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";
-    // var file = fileInput.target.files[0];
+    
     var buf = new Buffer(images.replace(/^data:image\/\w+;base64,/, ""), 'base64')
+    AWSService.config.accessKeyId = this.awsKey;
 
+    AWSService.config.secretAccessKey = this.awsSecret;
     AWSService.config.signatureVersion = 'v4';
     var bucket = new AWSService.S3({ params: { Bucket: 'zadapp' } });
     var timestamp = new Date().getUTCMilliseconds();
 
     var params = {
-      Key: "jjh" + timestamp + ".jpeg", Body: buf, ContentEncoding: 'base64',
+      Key: "recipiesImages/zad_" + timestamp + ".jpeg", Body: buf, ContentEncoding: 'base64',
       ContentType: 'image/jpeg'
     };
 
@@ -178,7 +294,41 @@ export class CreateRecipie {
         this.presentToast("Error occured while uploading");
       else {
         this.presentToast("Upload successfull.");
-        this.createRecipie.PhotosList.push({ s3Url: data.Location, isPrimary: true });
+        let imageLength=this.createRecipie.Images.length;
+        this.createRecipie.Images.push({ URL: data.Location,Order:imageLength, Type: "jpeg" });
+      }
+    });
+  }
+
+   uploadVideo(videoBuffer) {
+    let loading = this.loadingCtrl.create({
+      content: 'Uploading video...'
+    });
+    loading.present();
+
+    var AWSService = (<any>window).AWS;
+    
+   // var buf = new Buffer(images.replace(/^data:image\/\w+;base64,/, ""), 'base64')
+   AWSService.config.accessKeyId = this.awsKey;
+
+    AWSService.config.secretAccessKey = this.awsSecret;
+    AWSService.config.signatureVersion = 'v4';
+    var bucket = new AWSService.S3({ params: { Bucket: 'zadapp' } });
+    var timestamp = new Date().getUTCMilliseconds();
+
+    var params = {
+      Key: "recipieVideos/zad_" + timestamp + ".mp4", Body: videoBuffer, //ContentEncoding: 'base64',
+      ContentType: 'video/mp4'
+    };
+
+    bucket.upload(params, (err, data) => {
+      loading.dismiss();
+      if (err)
+        this.presentToast("Error occured while uploading");
+      else {
+        this.presentToast("Upload successfull.");
+        let videoLength=this.createRecipie.Videos.length;
+        this.createRecipie.Videos.push({ URL: data.Location,Order:videoLength, Type: "video/mp4" });
       }
     });
   }

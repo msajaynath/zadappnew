@@ -1,0 +1,115 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Search</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content *ngIf="SelectedList.length > 0" style="overflow: hidden;">
+	<ion-grid style="height: 90% !important;">
+    <ion-row>
+      <ion-col style="background-color: lavender" width-25>
+        <ion-row style="height: 20%">
+          <ion-col style="height: 20%" (click)="SearchItemClick('Time')">
+            <ion-img style="height: 40px;width: 40px;" src="assets/search/time.png"></ion-img>
+            <ion-label style="text-align: center">Time</ion-label>
+          </ion-col>
+        </ion-row>
+        <ion-row style="height: 20%">
+          <ion-col style="height: 20%" (click)="SearchItemClick('Calories')">
+            <ion-img  style="height: 40px;width: 40px;" src="assets/search/calories.png"></ion-img>
+            <ion-label style="text-align: center">Calories</ion-label>
+          </ion-col>
+        </ion-row>
+        <ion-row style="height: 20%">
+          <ion-col style="height: 20%" (click)="SearchItemClick('Cusine')">
+            <ion-img style="height: 40px;width: 40px;" src="assets/search/cusine.jpg"></ion-img>
+            <ion-label style="text-align: center">Cusine</ion-label>
+          </ion-col>
+        </ion-row>
+        <ion-row style="height: 20%">
+          <ion-col style="height: 20%" (click)="SearchItemClick('Categories')">
+            <ion-img style="height: 40px;width: 40px;" src="assets/search/category.png"></ion-img>
+            <ion-label style="text-align: center">Categories</ion-label>
+          </ion-col>
+        </ion-row>
+        <ion-row style="height: 20%">
+          <ion-col style="height: 20%" (click)="SearchItemClick('Cooking Type')">
+            <ion-img style="height: 40px;width: 40px;" src="assets/search/cookingtype.jpg"></ion-img>
+            <ion-label style="text-align: center">Cooking Type</ion-label>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+      <ion-col width-75>  
+        <div style="height: 100%;overflow-y: auto;">
+          <ion-list *ngIf="SelectedList == 'Categories'">
+            <ion-list-header style="text-align: center">
+              {{SelectedList}}
+            </ion-list-header> 
+            <ion-item *ngFor="let item of LookUp[0].CategoryTag let index =index; let odd=odd; let even=even" 
+              [class.odd]="odd" 
+              [class.even]="even">
+              <ion-label>{{item.CategoryNameEn}}</ion-label>
+              <ion-checkbox [(ngModel)]="item.IsSelected"></ion-checkbox>
+            </ion-item>
+          </ion-list>
+
+          <ion-list *ngIf="SelectedList == 'Cusine'">
+            <ion-list-header style="text-align: center">
+              {{SelectedList}}
+            </ion-list-header> 
+            <ion-item *ngFor="let item of LookUp[0].CusineTag; let odd=odd; let even=even" 
+              [class.odd]="odd" 
+              [class.even]="even">
+              <ion-label>{{item.CusineNameEn}}</ion-label>
+              <ion-checkbox [(ngModel)]="item.IsSelected"></ion-checkbox>
+            </ion-item>
+          </ion-list>
+
+          <ion-list *ngIf="SelectedList == 'Cooking Type' ">
+            <ion-list-header style="text-align: center">
+              {{SelectedList}}
+            </ion-list-header> 
+            <ion-item *ngFor="let item of LookUp[0].CookingTypeTag; let odd=odd; let even=even" 
+              [class.odd]="odd" 
+              [class.even]="even">
+              <ion-label>{{item.CookingTypeNameEn}}</ion-label>
+              <ion-checkbox [(ngModel)]=item.IsSelected></ion-checkbox>
+            </ion-item>
+          </ion-list>
+
+          <ion-list *ngIf="SelectedList == 'Time'" radio-group [(ngModel)]="SelectedTime">
+            <ion-list-header style="text-align: center">
+              {{SelectedList}}
+            </ion-list-header>
+
+            <ion-item *ngFor="let item of LookUp[0].Time; let odd=odd; let even=even" 
+              [class.odd]="odd" 
+              [class.even]="even">
+              <ion-radio value={{item._Id}}></ion-radio>
+              <ion-label>{{item.CookingTimeEn}}</ion-label>
+            </ion-item>
+          </ion-list>
+          <ion-list *ngIf="SelectedList == 'Calories'" radio-group [(ngModel)]="SelectedCalories ">
+            <ion-list-header style="text-align: center">
+              {{SelectedList}}
+            </ion-list-header>
+
+            <ion-item *ngFor="let item of LookUp[0].Calories; let odd=odd; let even=even" 
+              [class.odd]="odd" 
+              [class.even]="even">
+              <ion-radio value={{item._Id}}></ion-radio>
+              <ion-label>{{item.CaloriesNameEn}}</ion-label>
+            </ion-item>
+          </ion-list>
+        </div> 
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <ion-buttons end style="width: 94%">
+    <button style="width: 46%" ion-button color="danger">Cancel</button>
+    <button style="width: 46%" ion-button (click)="RefineSearchSave()">Search</button>
+  </ion-buttons>
+</ion-content>

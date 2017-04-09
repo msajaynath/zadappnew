@@ -1,0 +1,150 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>{{"Recipe Details" | translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content  *ngIf="primaryImage.length > 0"> 
+  <div  class="card-background-page">    
+    <img  src={{primaryImage}}/>
+    <div class="RatingText"> 
+      <div style="float:right;display: block;height: 5%">
+        <rating style="color: #ffb400;height: 5%" [(ngModel)]=recipieDetails.Rating
+        readOnly="false" max="5" (ngModelChange) = "onModelChange($event)"></rating>
+      </div>
+    </div>
+    <div class="card-Ingerigent-Text">
+      <div class="RecipieDetailsText">
+        <div style="font-size: 17px;">{{recipieDetails.RecipeName}}</div>
+        <div style="font-style: italic;color: gold;">{{recipieDetails.RecipeDescription}}</div>     
+      </div>
+      <div (click)="RecipieOwnerClick($event, recipieDetails.MakerId)" style="width:50%;display: block;float:right">
+        <ion-avatar item-right style="margin-right: 46%">
+          <img class="item-profileRecipie"  src={{recipieDetails.MakerImage}}>
+        </ion-avatar>
+        <div style="text-align: center;color: white" >{{recipieDetails.MakerName}}</div>
+      </div>
+    </div>
+  </div>
+
+  <ion-list no-lines>
+   <ion-item>   
+      <ion-label (click) = "ShowItems(1)"  *ngIf ="ShowItem == 1" class="ListHeading" style="font-size: large;color: blue;">Ingredents |</ion-label> 
+      <ion-label (click) = "ShowItems(1)" *ngIf ="ShowItem != 1" class="ListHeading" >Ingredents |</ion-label> 
+      <ion-label (click) = "ShowItems(2)" *ngIf ="ShowItem == 2" style="font-size: large;color: blue;" class="ListHeading">Directions |</ion-label>
+      <ion-label (click) = "ShowItems(2)" *ngIf ="ShowItem != 2"  class="ListHeading">Directions |</ion-label>
+      <ion-label *ngIf ="ShowItem == 3" style="font-size: large;color: blue;" (click) = "ShowItems(3)" class="ListHeading">Reviews 
+        <ion-icon (click) = "AddNewRecipie()"  *ngIf ="ShowItem == 3 && !this.IsAddNewRecipie" name="add-circle" style="color: lawngreen"></ion-icon>   
+        <ion-icon (click) = "CloseAddNewRecipie()"  *ngIf ="ShowItem == 3 && this.IsAddNewRecipie" name="add-circle" style="color: brown"></ion-icon>   
+      </ion-label>
+      <ion-label *ngIf ="ShowItem != 3" (click) = "ShowItems(3)" class="ListHeading">Reviews 
+        <ion-icon (click) = "AddNewRecipie()" *ngIf ="ShowItem == 3 && !this.IsAddNewRecipie" name="add-circle" style="color: lawngreen"></ion-icon>   
+        <ion-icon (click) = "CloseAddNewRecipie()"  *ngIf ="ShowItem == 3 && this.IsAddNewRecipie" name="add-circle" style="color: brown"></ion-icon>   
+      </ion-label>
+    </ion-item>
+  </ion-list> 
+  <ion-list no-lines *ngIf ="ShowItem == 1">   
+    <ion-item class="AddAllIngredent">
+      <ion-icon name="add-circle" style="color: lawngreen"></ion-icon>
+      Add all ingredients
+    </ion-item>
+    <button ion-item *ngFor="let item of recipieDetails.Ingredents let index =index; let odd=odd; let even=even" 
+      [class.odd]="odd" 
+      [class.even]="even"  (click)="itemSelected(item)">
+      <ion-icon name="add-circle" style="color: lawngreen"></ion-icon> 
+      <span> {{ item }}</span>
+    </button>  
+  </ion-list>
+
+  <ion-list *ngIf ="ShowItem == 2" no-lines>
+   <div class={{directionStyle}}>
+      <div *ngFor="let item of directions let index =index;">
+        <ion-item style="background-color: beige">Step {{index + 1}}</ion-item>
+        <ion-item text-wrap *ngFor="let dir of item.subDirection let i =index; 
+          let odd=odd; 
+          let even=even" 
+          [class.odd]="odd" 
+          [class.even]="even">
+          <ion-icon name="checkmark"></ion-icon> {{dir.Text}}
+        </ion-item>
+      </div>
+   </div>  
+    <ion-item class="odd">
+      <button (click)='StylingClick()' ion-button full>{{ButtonContent}}</button>
+    </ion-item>
+  </ion-list> 
+
+  <div *ngIf ="ShowItem == 3">
+    <div *ngIf ="ShowItem == 3 && this.IsAddNewRecipie" class="odd" style="padding: 3%;">
+      <ion-item no-lines style="background-color: darkseagreen;">
+        <span style="text-align: center;display: block"> Tap to add your rating</span>
+        <rating style="color: #ffb400;height: 5%;display: block;text-align: center;margin-right: 10%;" [(ngModel)] = addReview.ReviewRating
+          readOnly="true" max="5"></rating>
+      </ion-item>
+      <ion-item no-lines>
+        <ion-label floating>Comments</ion-label>
+        <ion-textarea [(ngModel)]="addReview.ReviewDescription" type="text"></ion-textarea>
+      </ion-item>
+      <button (click)='SaveReviewDetails()' ion-button full>Save Review</button>
+    </div>
+    <ion-list *ngFor="let item of recipieDetails.Reviews" class="even">
+      <ion-list-header class="even">
+        <ion-avatar item-left>
+          <img src={{item.ReviewerImage}}>
+        </ion-avatar>
+        <div style="float: left; width:40%">
+          <span>{{item.ReviewerName}}</span>
+          <p>{{item.ReviewedDate}}</p>
+        </div>
+        <div style="float: right">
+          <rating style="color: #ffb400;height: 5%" [(ngModel)] = item.ReviewRating
+          readOnly="true" max="5"></rating>
+        </div>
+      </ion-list-header>
+      <ion-item text-wrap class="odd">
+        {{item.ReviewDescription}}
+      </ion-item>
+    </ion-list>
+  </div> 
+  
+  <ion-list no-lines>
+   <ion-item>
+      <ion-label class="ListHeading">Photos({{recipieDetails.PhotosList.length}})</ion-label>
+   </ion-item>
+  </ion-list> 
+  <ion-item class="AddAllIngredent">
+    <ion-scroll scrollX="true"  class="item" >
+      <ion-row>
+        <ion-col  width-33 ><img (click) = "VideoPlayClick()" src="assets/search/category.png"/></ion-col>
+        <ion-col *ngFor="let item of recipieDetails.PhotosList" width-33  >
+          <img src={{item.s3Url}} imageViewer />
+        </ion-col>
+      </ion-row>
+    </ion-scroll>
+  </ion-item>
+  <ion-list no-lines>
+   <ion-item>
+      <ion-label class="ListHeading">RecipieTags</ion-label>
+   </ion-item>
+  </ion-list>  
+  <ion-list style="padding: 5%" no-lines class="AddAllIngredent">
+   <ion-chip>
+     <ion-avatar>
+        <img src="assets/search/category.png">
+      </ion-avatar>
+      <ion-label>{{recipieDetails.Category}}</ion-label>
+    </ion-chip>
+    <ion-chip>
+      <ion-avatar>
+        <img src="assets/search/cusine.jpg">
+      </ion-avatar>
+      <ion-label>{{recipieDetails.Cusine}}</ion-label>
+    </ion-chip>
+    <ion-chip>
+      <ion-avatar>
+        <img src="assets/search/cookingtype.jpg">
+      </ion-avatar>
+      <ion-label>{{recipieDetails.CookingType}}</ion-label>
+    </ion-chip>
+  </ion-list>  
+</ion-content>

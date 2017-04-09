@@ -58,11 +58,24 @@ export class Recipies{
 	RecipieName: string; 
 	RecipieDescription: string; 
 	Time: string; 
-	ImageURL: Array<{s3Url: string, isPrimary: boolean}>; 
 	Liked: boolean;
 	MakerId: string;
 	MakerName: string;
 	TotalLikes: number;
+	Ingredents: Array<string>;
+	Directions: Array<string>;
+	RatingValue:Number;
+	RatingCount: Number;
+	Calories: String;
+	Images: [{
+		URL: String,
+		Order: Number,
+		Type: String
+	}];
+	Category: String;
+	Language: String;
+	CookingType: String;
+	Cusine: String;
 }
 
 

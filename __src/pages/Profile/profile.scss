@@ -1,0 +1,21 @@
+.borderLeft{
+    border-left: 1px solid lightgray;
+    text-align: center;
+}
+
+.borderRight{
+    border-right: 1px solid lightgray;
+}
+
+.borderTop{
+    border-top: 1px solid lightgray;
+    text-align: center;
+}
+
+.item-profile {
+  border-radius: 50%;
+  height: 110px;
+  width:110px !important;  
+  display: block;
+  margin: 0 auto;
+}

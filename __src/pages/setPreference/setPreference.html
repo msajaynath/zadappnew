@@ -1,0 +1,50 @@
+<ion-content class="odd" *ngIf="aCategory.length > 0">
+   <a (click)="test()" style="text-align: right;color: blue;float: right;margin-bottom: 5%">Skip To Home</a>
+  <ion-item text-wrap class="odd" no-lines>
+    <div style="text-align: center" class="odd">Welcome TO ZaD recipie App</div><br />
+    <div class="odd" style="text-align: justify; color: lightcoral;font-style: italic;"> Please fill out some basic tags so that we can give you your prefered recipies</div>
+  </ion-item>
+  <ion-card>
+    <ion-card-header style="background-color:bisque">Category</ion-card-header>
+		<ion-card-content>
+			<ion-list>
+				<ion-item>
+          <ion-label>Select Category</ion-label>
+          <ion-select [(ngModel)]="SelectedCategory" cancelText="Cancel" okText="Okay!">
+            <ion-option  *ngFor="let item of LookUp[0].CategoryTag" value={{item._id}}>{{item.CategoryNameEn}}</ion-option>
+          </ion-select>
+        </ion-item>
+			</ion-list>
+		</ion-card-content>
+	</ion-card>	
+  <ion-card>
+    <ion-card-header style="background-color:bisque">Category</ion-card-header>
+		<ion-card-content>
+			<ion-list>
+				<ion-item>
+          <ion-label>Select Cooking Type</ion-label>
+          <ion-select [(ngModel)]="SelectedCookingType" cancelText="Cancel" okText="Okay!">
+            <ion-option  *ngFor="let item of LookUp[0].CookingTypeTag" value={{item._id}}>{{item.CookingTypeNameEn}}</ion-option>
+          </ion-select>
+        </ion-item>
+			</ion-list>
+		</ion-card-content>
+	</ion-card>	
+  <ion-card>
+    <ion-card-header style="background-color:bisque">Cusine</ion-card-header>
+		<ion-card-content>
+			<ion-list>
+				<ion-item>
+          <ion-label>Select Cusine</ion-label>
+          <ion-select [(ngModel)]="SelectedCusine" cancelText="Cancel" okText="Okay!">
+            <ion-option  *ngFor="let item of LookUp[0].CusineTag" value={{item._id}}>{{item.CusineNameEn}}</ion-option>
+          </ion-select>
+        </ion-item>
+			</ion-list>
+		</ion-card-content>
+	</ion-card>	
+  <br />
+  <ion-item class="odd">
+    <button (click)='SavePreference()' ion-button full>Save Preference</button>
+  </ion-item>
+</ion-content>

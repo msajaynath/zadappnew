@@ -1,14 +1,11 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, App  } from 'ionic-angular';
+import { NavController, NavParams } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
-import { TranslateService } from 'ng2-translate/ng2-translate';
-import { LanguageService } from '../service/language';
 import { Home } from '../home/Home';
 import { CreateProfile } from '../CreateProfile/CreateProfile';
 import { UserService } from '../service/UserServices';
 import { ProfileDetails } from '../Models/ProfileDetails'
 import { Login } from '../login/Login';
-import { SetPreference } from '../setPreference/SetPreference';
 
 
 @Component({
@@ -20,9 +17,12 @@ export class Profile {
   IsViewOtherProfile: boolean;
   profileInfo: ProfileDetails;
   userId : string;
-
-  constructor(public navCtrl: NavController, private app: App,public translate: TranslateService, public language: LanguageService, public storage:Storage, public UserService: UserService, public navParams: NavParams) {
+  options:any;
+  s3BaseURL:String;
+  constructor(public navCtrl: NavController, public storage:Storage, public UserService: UserService, public navParams: NavParams) {
+    this.s3BaseURL="https://s3.ap-south-1.amazonaws.com/zadapp/ProfileImages/";
     this.userId = '';
+    this.options = {};
     this.IsViewOtherProfile = false;
     this.IsViewOtherProfile = navParams.get("IsViewOtherProfile");
     if(this.IsViewOtherProfile){
@@ -34,15 +34,17 @@ export class Profile {
     else{
         this.storage.get('LoggedInUserId').then((val) => {   
         if(val == null){
+          this.options.PageName = 'Profile';
+          this.options.UserId = val;
           this.navCtrl.setPages([
-            {page:Login}
-          ])
+            {page:Login, params: {'params': this.options}}
+            ])
         }
         else if(val.length > 0){
-          this.UserService.GetUserDetailsById(val).then((profileInfo : ProfileDetails) =>{ 
-            this.profileInfo = profileInfo;
-            this.userId = "fdhfd";
-          })    
+          this.storage.get('LoggedInUserDetails').then((info) => { 
+            this.profileInfo = info;
+	          this.userId = info.id;
+          }); 
         }
       });
     }
@@ -53,16 +55,6 @@ export class Profile {
       PageName: "Profile",
       ProfileId: this.userId
     });
-  }
-
-  changeLanguage(lang: string) {
-    this.translate.use(lang);
-    this.language.setValue(lang)
-  }
-
-  Logout(){
-    this.storage.clear();
-    this.app.getRootNav().push(SetPreference);
   }
 
   EditProfile(event) {

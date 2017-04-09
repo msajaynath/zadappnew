@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
+import { TranslateService } from 'ng2-translate/ng2-translate';
 
 @Component({
   selector: 'page-search',
@@ -22,10 +23,12 @@ export class Search {
 	SelectedCategories: string[];
 	SelectedCusine: string[];
 	SelectedCookingType: string[];
-
+	currentLanguage:string;
 	SelectedList: string;
-  constructor(public navCtrl: NavController, public storage:Storage, public navParams: NavParams) {
+	
+  constructor(public navCtrl: NavController, public translate: TranslateService, public storage:Storage, public navParams: NavParams) {
 		this.SelectedList = "";
+		this.currentLanguage = this.translate.currentLang;
 		this.storage.get('FullLookUp').then((val) => {  
 			for(let  i =0; i<val[0].CategoryTag.length; i++){
 				val[0].CategoryTag[i].IsSelected = false;

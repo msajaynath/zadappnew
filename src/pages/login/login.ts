@@ -1,10 +1,17 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams,Platform } from 'ionic-angular';
+import { NavController, NavParams,Platform, LoadingController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { Home } from '../home/Home';
 import { CreateProfile } from '../CreateProfile/CreateProfile';
+import { CreateRecipie } from '../CreateRecipie/CreateRecipie';
 import { UserService } from '../service/UserServices';
 import { Network } from '@ionic-native/network';
+import { Profile } from '../profile/Profile';
+import { Groups } from '../Groups/Groups';
+import { Cookbook } from '../cookbook/Cookbook';
+import { TranslateService } from 'ng2-translate/ng2-translate';
+import { LanguageService } from '../service/language';
+
 declare var navigator: any;
 
 @Component({
@@ -17,16 +24,16 @@ export class Login {
   password: string;
   LoggedInUserDetails: any;
   IsNetworkAvailable: boolean;
+  invokedPageDetails: any;
 
-  constructor(private platform: Platform,private network: Network, public navCtrl: NavController, public storage: Storage, public userServices: UserService, public navParams: NavParams) {
+  constructor(private platform: Platform,private network: Network, public loadingCtrl: LoadingController, public navCtrl: NavController, public translate: TranslateService, public language: LanguageService, public storage: Storage, public userServices: UserService, public navParams: NavParams) {
+   this.invokedPageDetails = navParams.get("params");
    this.platform.ready().then(() => {
-     
     if (this.network.type == "none") {
       this.IsNetworkAvailable = false;
     }
     else {
       this.IsNetworkAvailable = true;
-
     }
    });
    
@@ -34,45 +41,73 @@ export class Login {
       this.IsNetworkAvailable = false;
     });
     this.network.onConnect().subscribe(() => {
-     
-                        this.IsNetworkAvailable = true;
-  });
+      this.IsNetworkAvailable = true;
+    });
   }
 
   
- Login() {
-    if(this.IsNetworkAvailable==true)
+ Login() 
+ {
+   this.storage.ready().then(()=>{
+
+   let loading = this.loadingCtrl.create({
+         spinner: 'hide',
+
+      content: `
+      <img src='assets/loading/loading.gif'>
+      `
+    });
+   loading.present();
+   if(this.IsNetworkAvailable)
    { 
       this.userServices.LoginValidation(this.email, this.password).then((LoggedInUserDetails : any) =>{ 
-       this.LoggedInUserDetails = LoggedInUserDetails; 
-       debugger; 
-        if(this.LoggedInUserDetails.status==true){  
+      this.LoggedInUserDetails = LoggedInUserDetails; 
+      
+      if(this.LoggedInUserDetails.status==true)
+      {  
+        debugger;
+        
         this.storage.set('LoggedInUserId', this.LoggedInUserDetails.id);
-         this.storage.set('LoggedInUserName',  this.LoggedInUserDetails.username);
-        this.storage.set('LoggedInFirtName', this.LoggedInUserDetails.firstname);
-        this.storage.set('LoggedInIsPrivate', this.LoggedInUserDetails.isprivate);
-        this.storage.set('LoggedInLanguage', this.LoggedInUserDetails.language);
-        this.navCtrl.setPages([
-      {page:Home}])
-        }      
-           else
-           {
- alert(this.LoggedInUserDetails.message);
-           }
+        this.storage.set('LoggedInUserDetails',  this.LoggedInUserDetails);
+        this.translate.use(this.LoggedInUserDetails.Language);
+        this.language.setValue(this.LoggedInUserDetails.Language)
+        var root =this;
+        setTimeout(function(){
+          if(root.invokedPageDetails.PageName == 'Profile')
+          root.navCtrl.setPages([{page:Profile}])
+        else if(root.invokedPageDetails.PageName == 'Groups')
+          root.navCtrl.setPages([{page:Groups}])
+        else if(root.invokedPageDetails.PageName == 'CookBook')
+          root.navCtrl.setPages([{page:Cookbook}])
+        else if(root.invokedPageDetails.PageName == 'CreateRecipie')
+          root.navCtrl.setPages([{page:CreateRecipie}])
+        else if(root.invokedPageDetails.PageName == 'Home')
+          root.navCtrl.pop();
+        else 
+          root.navCtrl.setPages([{page:Home}])  
+          loading.dismiss();
+        },1000)
+      }      
+      else
+      {
+        alert(this.LoggedInUserDetails.message);
+        loading.dismiss();
+      }
     });
    }
    else 
    {
       alert("No Network")
-    
-
+      loading.dismiss();
    }
-    } 
+   });
+ } 
     
-      GoToHome(){
+  GoToHome(){
     this.navCtrl.setPages([
       {page:Home}
-   ])      
+    ])    
+  
   }      
 
 createAccount(){

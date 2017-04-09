@@ -4,39 +4,42 @@
       <ion-icon name="menu"></ion-icon>
     </button>
     <ion-title style="display: block;margin-top:4%;width: 60%;float: left;">{{"Profile" | translate}}</ion-title>
-    <i *ngIf="!IsViewOtherProfile" (click)="EditProfile($event)" class="fa fa-pencil-square-o" aria-hidden="true"></i>
-
-    <button *ngIf="!IsViewOtherProfile" (click)="Logout()" style="display: block;float: right;" ion-button>Logout</button>
   </ion-navbar>
 </ion-header>
 
 <ion-content *ngIf="userId.length > 0">
   <ion-card>
-    <div style="background-color: #47455b;color: gold;font-family:Times New Roman"><br />
-      <img class="item-profile"  src="assets/Profile/profile.jpg">
+    <div style="background:url('assets/Profile/pback.jpg');color: gold;font-family:Times New Roman"><br />
+      <img class="item-profile"  src="{{s3BaseURL+userId+'.jpeg'}}" onerror="this.src='assets/Profile/cheff.png'">
       <div style="text-align: center">{{profileInfo.Name}}</div>
-      <div style="text-align: center">{{profileInfo.JobDescription}}</div>
+      <div style="text-align: center">{{profileInfo.JobDescription}} 
+        <i *ngIf="!IsViewOtherProfile" (click)="EditProfile($event)" style="color: mistyrose;font-size: 21px;" class="fa fa-pencil-square-o" aria-hidden="true"></i>
+      </div>
       <br/>
       <ion-grid>
         <ion-row>
           <ion-col width-33 class="borderTop borderRight">
             <div>Recipie</div>
-            <div>{{profileInfo.UserRecipies.length}}</div>
+            <div>{{profileInfo.UserRecipies}}</div>
            </ion-col>
           <ion-col width-33 class="borderTop borderRight">
             <div>Followers</div>
-            <div>{{profileInfo.Followers.length}}</div>  
+            <div>{{profileInfo.Followers}}</div>  
            </ion-col>          
           <ion-col width-33 class="borderTop">
             <div>Following</div>
-            <div>{{profileInfo.Following.length}}</div>
+            <div>{{profileInfo.Following}}</div>
           </ion-col>
         </ion-row>
       </ion-grid>
     </div>
-    <ion-card-header style="background-color: #e3e6ea">
+    <ion-card-header *ngIf="!IsViewOtherProfile">
       <span style="display: block;width: 20%;float: left">Private</span>
       <ion-toggle [(ngModel)]="profileInfo.ISPrivate" style="float: right"></ion-toggle>
+    </ion-card-header>
+    <ion-card-header *ngIf="IsViewOtherProfile">
+      <span style="display: block;width: 20%;float: left">Follow</span>
+      <button ion-button style="float: right">Follow</button>
     </ion-card-header>
     <ion-card-header style="background-color: #e3e6ea">
       Contact-ME
@@ -51,17 +54,9 @@
         {{profileInfo.PhoneNumber}}
       </ion-item>
     </ion-list>   
-    <ion-card-header *ngIf="!IsViewOtherProfile" style="background-color: #e3e6ea">
-      Language Preference
-    </ion-card-header>   
-    <ion-list *ngIf="!IsViewOtherProfile" >
-      <ion-item> 
-      <span (click)="changeLanguage('ar')"  style="margin-right: 20px; display: block; float: left;"><img src='assets/LanguageIcon/Arabic.jpg' style="height: 25px;width: 25px;"></span>
-      <span (click)="changeLanguage('en')"><img src='assets/LanguageIcon/English.png' style="height:25px;width: 25px;"></span>
-      </ion-item>
-    </ion-list>
+    
     <ion-card-header style="background-color: #e3e6ea">
-      <span>My Recipies</span>
+      <span>My Recipie List</span>
       <span style="float: right"><button (click)="MyRecipiesList($event, 'item')" ion-button>My Recipies</button></span>
     </ion-card-header>
   </ion-card>

@@ -10,12 +10,16 @@ import { Login } from '../login/Login';
 })
 export class Cookbook {
   cookBook: Array<{Title: string, NoOfRecipies: number, ImageUrl: string}>;
+	options:any;
 
   constructor(public navCtrl: NavController, public storage:Storage, public navParams: NavParams) {
+		this.options = {};
 		this.storage.get('LoggedInUserId').then((val) => {   
 			if(val == null){
+				this.options.PageName = 'CookBook';
+        this.options.UserId = val;
 				this.navCtrl.setPages([
-					{page:Login}
+					{page:Login, params: {'params': this.options}}
 				])
 			}
 			else if(val.length > 0){

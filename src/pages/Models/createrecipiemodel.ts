@@ -4,17 +4,18 @@ export class CreateRecipieModel {
 	MakerId		     			: String;
 	MakerName     			: String;
 	Time								: String;
+	Videos								: Array<{URL: string, Order: Number,Type: String}>;
 	Ingredents    			: Array<string>;
 	Directions    			: Array<string>;
 	Rating      				: Number;  
 	Calories      			: String;    
-	PhotosList					: Array<{s3Url: string, isPrimary: boolean}>;
+	Images					: Array<{URL: string, Order: Number,Type: String}>;
 	Category     				: String;
 	CookingType      		: String;
 	Cusine							: String;
 	constructor(RecipeName: String,	RecipeDescription	: String,	MakerId : String, MakerName : String, Time: String,
 							Ingredents : Array<string>,	Directions : Array<string>,	Rating : Number,  
-							Calories : String, 	PhotosList : Array<{s3Url: string, isPrimary: boolean}>,	
+							Calories : String, 	Images : Array<{URL: string, Order: Number,Type: String}>,Videos : Array<{URL: string, Order: Number,Type: String}>,	
 							Category : String,	CookingType	: String, Cusine: String) {
 		this.RecipeName = RecipeName;
 		this.RecipeDescription = RecipeDescription;
@@ -25,7 +26,8 @@ export class CreateRecipieModel {
 		this.Directions = Directions;
 		this.Rating = Rating;
 		this.Calories = Calories;
-		this.PhotosList = PhotosList;
+		this.Images = Images;
+		this.Videos = Videos;
 		this.Category = Category;		
 		this.CookingType = CookingType;
 		this.Cusine = Cusine;

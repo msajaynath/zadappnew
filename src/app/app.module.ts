@@ -23,6 +23,9 @@ import { FavouriteList } from '../pages/favouritelist/FavouriteList'
 import { Search } from '../pages/search/Search'
 import { Login } from '../pages/login/Login';
 import { SetPreference } from '../pages/setPreference/SetPreference';
+import { Settings } from '../pages/settings/Settings';
+import { Notifications } from '../pages/notifications/Notifications';
+import { UserSettings } from '../pages/usersettings/UserSettings';
 
 
 export function createTranslateLoader(http: Http) {
@@ -46,7 +49,10 @@ export function createTranslateLoader(http: Http) {
     FavouriteList,
     Search,
     Login,
-    SetPreference
+    SetPreference,
+    Settings,
+    Notifications,
+    UserSettings
   ],
   imports: [
     IonicModule.forRoot(MyApp, {tabsPlacement:'top'}),
@@ -74,7 +80,10 @@ export function createTranslateLoader(http: Http) {
     FavouriteList,
     Search,
     Login,
-    SetPreference
+    SetPreference,
+    Settings,
+    UserSettings,
+    Notifications
   ],
   providers: [Storage, {provide: ErrorHandler, useClass: IonicErrorHandler},Network]
 })

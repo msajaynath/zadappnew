@@ -1,19 +1,20 @@
 export class ProfileDetails {
-    FirstName	        : String;
+    Name	        : String;
+    id	        : String;
     JobDescription     	: String;
-    Followers	        : Array<string>;
-    Following    	: Array<string>;
-    UserRecipies    	: Array<string>;
+    Followers	        : number;
+    Following    	: number;
+    UserRecipies    	: number;
     ISPrivate      	: Boolean;  
     Language      	: String;    
     Email    		: String;
     PhoneNumber     	: String;
-    LikedRecipies      	: Array<string>;
+    LikedRecipies      	: number;
 
-    constructor(Name : String, JobDescription  : String,   Followers : Array<string>, Following : Array<string>,
-                UserRecipies  : Array<string>, ISPrivate: Boolean, Language : String,  Email  : String,
-                PhoneNumber : String, LikedRecipies  : Array<string>) {
-        this.FirstName = Name;
+    constructor(Name : String, JobDescription  : String,   Followers : number, Following : number,
+                UserRecipies  : number, ISPrivate: Boolean, Language : String,  Email  : String,
+                PhoneNumber : String, LikedRecipies  : number) {
+        this.Name = Name;
         this.JobDescription = JobDescription;
         this.Followers = Followers;		 				
         this.Following = Following;
@@ -27,16 +28,17 @@ export class ProfileDetails {
 }
 
 export const ProfileInfo: ProfileDetails = {
-    FirstName	        : "John Doe",
+    Name	        : "John Doe",
+    id:"",
     JobDescription     	: "Chief Chef @ Gate Way Taj",
-    Followers	        : ["rherhr", "rehrehrere", "tutikrtu", "yewtbhdfh", "dfoihjko"],
-    Following    	: ["dfhjhju", "gh56fg54", "h456gj465fh", "sfg65sg56", "fhds54dfh45", "ds564fg654", "t65he45", "sdg564g546"],
-    UserRecipies    	: ["tey5et54", "e65teht56h4", "w686r654g546", "t564et546wr546", "k546tk546t", "dh546hd546hgd", "d546dh546h", "564hdh45g6dh54", "ey56et564t"],
+    Followers	        : 47,
+    Following    	: 25,
+    UserRecipies    	: 12,
     ISPrivate      	: true,  
     Language      	: "en",
     Email    		: "joeDoe@gmail.com",
     PhoneNumber     	: "654556485",
-    LikedRecipies      	: ["gsdjgdjgjs","jsfjsfdjgg","tjudjhgsg","dddgjdhjd","etuetutu","etuetuetet","aeeayee","gdjfgjfgj","sfgjgj","hdgjdggdj","rtuetetu","dhdfdh"]
+    LikedRecipies      	: 74
 }
 
 export class GroupDetails {

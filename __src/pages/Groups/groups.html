@@ -1,0 +1,4 @@
+<ion-tabs *ngIf= "LoggedInUserId.length > 0" class="tabs-basic">
+  <ion-tab [root]="tab1Root" tabTitle="Followers" tabIcon="home"></ion-tab>
+  <ion-tab [root]="tab2Root" tabTitle="Following" tabIcon="information-circle"></ion-tab>
+</ion-tabs>

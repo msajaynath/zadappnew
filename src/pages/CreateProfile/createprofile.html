@@ -14,9 +14,16 @@
     <ion-card-header style="background-color:bisque">User Information</ion-card-header>
 		<ion-card-content>
 			<ion-list>
+				<ion-item *ngIf="PageTitle == 'EditProfile'">
+					<div style="background-color: #47455b;color: gold;font-family:Times New Roman;padding: 10%"><br />
+      <img class="item-profile"  src="{{s3BaseURL+UserInfo.id+'.jpeg'}}" onerror="this.src='assets/Profile/cheff.png'">
+						<i *ngIf="!IsViewOtherProfile" (click)='ChangeImage()' style="color: mistyrose;font-size: 21px; float: right" class="fa fa-pencil-square-o" aria-hidden="true"></i>  
+						<br />  
+    			</div>
+				</ion-item>
 				<ion-item>
 					<ion-label floating>{{"Name" | translate}}</ion-label>
-					<ion-input [(ngModel)]="createProfile.FirstName" type="text"></ion-input>
+					<ion-input [(ngModel)]="createProfile.Name" type="text"></ion-input>
 				</ion-item>
 				<ion-item>
 					<ion-label floating>{{"Occupation" | translate}}</ion-label>

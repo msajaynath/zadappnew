@@ -12,6 +12,7 @@ import { Categories } from '../pages/categories/Categories';
 import { CreateRecipie } from '../pages/CreateRecipie/CreateRecipie';
 import { Groups } from '../pages/Groups/Groups';
 import { SetPreference } from '../pages/setPreference/SetPreference';
+import { Settings } from '../pages/settings/Settings';
 
 @Component({
   templateUrl: 'app.html',
@@ -36,7 +37,8 @@ export class MyApp {
       { title: 'My Profile', component: Profile, icon:'<i class="fa fa-user" aria-hidden="true"></i>' },
       { title: 'Shopping List', component: Shoppinglist, icon:'<i class="fa fa-shopping-basket" aria-hidden="true"></i>' },
       { title: 'Create Recipe', component: CreateRecipie, icon:'<i class="fa fa-plus-circle" aria-hidden="true"></i>' },
-      { title: 'Groups', component: Groups, icon:'<i class="fa fa-users" aria-hidden="true"></i>' }
+      { title: 'Groups', component: Groups, icon:'<i class="fa fa-users" aria-hidden="true"></i>' },
+      { title: 'Settings', component: Settings, icon:'<i class="fa fa-cog" aria-hidden="true"></i>' }
     ];
 
   }

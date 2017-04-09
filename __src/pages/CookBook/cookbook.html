@@ -1,0 +1,16 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>{{"My Cookbook" | translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <ion-card (click)="CookBookClicked($event, item)" class="cookBook-background-page" *ngFor="let item of cookBook">
+    <img style="height: 125px;" src={{item.ImageUrl}}>
+    <div class="CookBook-title">{{item.Title | translate}}</div>
+    <div class="cookBook-subtitle">{{item.NoOfRecipies}}</div>
+  </ion-card>
+</ion-content>

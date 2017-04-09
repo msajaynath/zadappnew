@@ -24,10 +24,14 @@ export class Home {
 	CookBookId: string;
 	IsSearchClicked: boolean;
 	ProfileId : string;
-	LikedMsg : string
-
+	LikedMsg : string;
+	options:any;
+s3BaseURL:String;
   constructor(public navCtrl: NavController,public recipieService: RecipieService, public UserService: UserService, public storage:Storage, public navParams: NavParams, public popoverCtrl: PopoverController, public translate: TranslateService) {
+	        this.s3BaseURL="https://s3.ap-south-1.amazonaws.com/zadapp/ProfileImages/";
+
 		this.IsSearchClicked = false;
+		this.options = {};
 		this.pageName = navParams.get("PageName");
 		if(this.pageName == "Categories"){
 			this.categoryId = navParams.get("categoryId");
@@ -35,7 +39,6 @@ export class Home {
 			this.recipieService.GetAllRecipiesByCategoryId(this.categoryId).then((Recipies :Array<Recipies> ) =>{ 
 				this.Recipies = Recipies;
 			});
-			
 		}
 		else if(this.pageName == "CookBook"){
 			this.CookBookId = navParams.get("CookBookId");
@@ -53,6 +56,8 @@ export class Home {
 		}
 		else{
 			this.Recipies = [];
+			    this.storage.ready().then(() =>{
+
 			this.storage.get('UserPreferedCategory').then((catVal) => { 
 				this.storage.get('UserPreferedCusine').then((cusineVal) => { 
 					this.storage.get('UserPreferedCookingType').then((cookVal) => {
@@ -62,6 +67,7 @@ export class Home {
 					})
 				})
 			})
+					});
 		}
   } 
 
@@ -81,8 +87,10 @@ export class Home {
   }
 
 	itemTapped(event, item) {
-    this.navCtrl.push(RecipieDetails, {
-      RecipieId: item
+debugger;   
+let detRecipie=this.Recipies.find(x=>x.Id==item);
+ this.navCtrl.push(RecipieDetails, {
+      Recipie: detRecipie
     });
   }
 
@@ -103,11 +111,12 @@ export class Home {
 	}
 
   presentPopover() {
+		this.options.PageName = 'Home';
 		this.storage.get('LoggedInUserId').then((val) => {   
 			if(val == null){
-				this.navCtrl.setPages([
-					{page:Login}
-				])
+				this.navCtrl.push(Login, {
+					params: this.options
+				});
 			}
 			else if(val.length > 0){
 				let popover = this.popoverCtrl.create(FavouriteList);
@@ -136,8 +145,8 @@ export class Home {
 
 	GetPrimaryImage(ImageURLs){
 		for(let i =0; i<ImageURLs.length; i++ ){
-			if(ImageURLs[i].isPrimary)
-				return ImageURLs[i].s3Url
+			if(ImageURLs[i].Order == 0)
+				return ImageURLs[i].URL;
 		}
 	}
 

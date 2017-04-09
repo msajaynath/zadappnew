@@ -1,0 +1,142 @@
+<ion-header>
+  <ion-navbar>
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>{{"Create Recipe" | translate}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content *ngIf = "resultText.length > 0" style="background-color: lightsteelblue">
+  <ion-card>
+    <ion-card-header style="background-color:bisque">{{"Basic Recipe Details" | translate}}</ion-card-header>
+		<ion-card-content>
+			<ion-list>		
+				<ion-item>
+					<ion-label floating>{{"Recipe Name" | translate}}</ion-label>
+					<ion-input [(ngModel)]="createRecipie.RecipeName" type="text"></ion-input>
+				</ion-item>
+				<ion-item>
+					<ion-label floating>{{"Recipe Short Description" | translate}}</ion-label>
+					<ion-input [(ngModel)]="createRecipie.RecipeDescription" type="text"></ion-input>
+				</ion-item>
+        <ion-item>
+          <ion-label>{{"Time To Cook" | translate}}</ion-label>
+          <ion-select [(ngModel)]="createRecipie.Time" cancelText="Cancel" okText="Okay!">
+            <ion-option  *ngFor="let item of LookUp[0].Time" value={{item._id}}>{{item.CookingTimeEn}}</ion-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label>{{"Calories" | translate}}</ion-label>
+          <ion-select [(ngModel)]="createRecipie.Calories" cancelText="Cancel" okText="Okay!">
+            <ion-option  *ngFor="let item of LookUp[0].Calories" value={{item._id}}>{{item.CaloriesNameEn}}</ion-option>
+          </ion-select>
+        </ion-item>
+			</ion-list>
+		</ion-card-content>
+	</ion-card>
+
+  <ion-card>
+    <ion-card-header style="background-color:bisque">{{"Photos" | translate}} 
+      <ion-icon class="circleadddd" name="add-circle" (click)="presentActionSheet()"></ion-icon>
+    </ion-card-header>
+    <ion-card-content>  
+      <ion-scroll scrollX="true" style="white-space: nowrap;" >
+        <ion-label *ngIf="createRecipie.PhotosList.length==0">No photos added yet!</ion-label>
+          <ion-row>
+            <ion-col *ngFor="let item of createRecipie.PhotosList" width-50 height-50>
+              <img src={{item.s3Url}} imageViewer />
+            </ion-col>
+          </ion-row>
+      </ion-scroll>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header style="background-color:bisque">{{"Ingredients Details" | translate}}</ion-card-header>
+		<ion-card-content>
+      <ion-list>
+        <ion-item>
+          <ion-range min="1" max="20" [(ngModel)]="noOfIngredents" color="secondary" (ionChange)="changeIngredents()">
+            <ion-label range-left>1</ion-label>
+            <ion-label range-right>20</ion-label>
+          </ion-range>
+        </ion-item>
+        <ion-grid *ngFor="let item of createRecipie.Ingredents;let i = index; ">
+          <ion-row >
+            <ion-col width-90>
+              <ion-item>
+                <ion-label floating>{{"Ingredient" | translate}} - {{i +1 }}</ion-label>
+                <ion-input [(ngModel)]="item.ingredent" type="text"></ion-input>
+              </ion-item>
+            </ion-col>
+            <ion-col width-9>
+              <ion-icon style="margin-top: 95%" ios="ios-close-circle" (click)="closeIngredent(i)" md="md-close-circle" item-left></ion-icon>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-list>
+    </ion-card-content>
+   </ion-card>
+   <ion-card>
+    <ion-card-header style="background-color:bisque">
+      <span>{{"Directions" | translate}}</span>
+      <span style="float: right"><button (click)="AddMoreSteps()" ion-button color="secondary">{{"Add Steps" | translate}}</button></span>
+     </ion-card-header>
+		<ion-card-content>
+			<ion-list>
+         <ion-grid *ngFor="let item of createRecipie.Directions;let i = index; ">
+          <ion-row >
+            <ion-col width-90>
+              <ion-item>
+                <ion-label floating>{{"Step" | translate}} - {{i +1 }}</ion-label>
+                <ion-textarea [(ngModel)]="item.Direction" type="text"></ion-textarea>
+              </ion-item>
+            </ion-col>
+            <ion-col width-9>
+              <ion-icon style="margin-top: 95%" ios="ios-close-circle" (click)="closeSteps(i)" md="md-close-circle" item-left></ion-icon>
+            </ion-col>
+          </ion-row>
+        </ion-grid>	
+			</ion-list>
+		</ion-card-content>
+	 </ion-card>
+  <ion-card>
+    <ion-card-header style="background-color:bisque">
+      <span>Recipie Tags</span>
+     </ion-card-header>
+		<ion-card-content>
+      <p style="margin: 5%">Please add the following tags to make searching more efficient</p>
+			<ion-list>
+        <ion-item>
+          <ion-label>Category Name</ion-label>
+          <ion-select [(ngModel)]="createRecipie.Category" cancelText="Cancel" okText="Okay!">
+            <ion-option  *ngFor="let item of LookUp[0].CategoryTag" value={{item._id}}>{{item.CategoryNameEn}}</ion-option>
+          </ion-select>
+        </ion-item>
+      </ion-list>
+
+      <ion-list>
+        <ion-item>
+          <ion-label>Method Of Cooking</ion-label>
+          <ion-select [(ngModel)]="createRecipie.CookingType" cancelText="Cancel" okText="Okay!">
+            <ion-option  *ngFor="let item of LookUp[0].CookingTypeTag" value={{item._id}}>{{item.CookingTypeNameEn}}</ion-option>
+          </ion-select>
+        </ion-item>
+      </ion-list>
+
+      <ion-list>
+        <ion-item>
+          <ion-label>Cusine</ion-label>
+          <ion-select [(ngModel)]="createRecipie.Cusine" cancelText="Cancel" okText="Okay!">
+            <ion-option  *ngFor="let item of LookUp[0].CusineTag" value={{item._id}}>{{item.CusineNameEn}}</ion-option>
+          </ion-select>
+        </ion-item>
+      </ion-list>
+		</ion-card-content>
+	 </ion-card>	
+   <ion-card>
+		<ion-card-content>
+      <button (click)='SaveRecipieDetails()' ion-button full>{{"Yummy" | translate}}</button>
+    </ion-card-content>
+   </ion-card>
+</ion-content>

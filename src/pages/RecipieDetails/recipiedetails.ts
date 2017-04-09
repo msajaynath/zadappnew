@@ -6,7 +6,8 @@ import {Storage} from '@ionic/storage';
 import { Profile } from '../profile/Profile';
 import { RecipieService } from '../service/RecipieServices';
 import { CommonServices } from '../service/generalservices';
-import { RecipieDetailsModel } from '../Models/RecipieDetailsmodel'
+//import { RecipieDetailsModel } from '../Models/RecipieDetailsmodel'
+import { Recipies } from '../Models/RecipieDetailsmodel'
 import { Review } from '../Models/RecipieDetailsmodel'
 
 @Component({
@@ -19,23 +20,24 @@ export class RecipieDetails {
   directions: Array<{subDirection: any}>;
   ButtonContent : string;
   directionStyle : string;
-  primaryImage : string;
-  recipieDetails : RecipieDetailsModel;
+  primaryImage : String;
+  recipieDetails : Recipies;
   ShowItem : number;
   IsAddNewRecipie: boolean;
   addReview;
   RecipieId: string;
   
   constructor(public navCtrl: NavController,public storage:Storage, private videoPlayer: VideoPlayer, public recipieService: RecipieService, public navParams: NavParams) {
-    this.RecipieId = navParams.get("RecipieId");
+    debugger;
+    this.recipieDetails = navParams.get("Recipie");
     this.primaryImage = "";
     this.directionStyle = "hideContent";
     this.ButtonContent = "Show Directions";
     this.ShowItem = 1;
     this.IsAddNewRecipie = false;
     this.addReview = new Review('',	'',	0, '','');
-    this.recipieService.GetRecipieDetailsById(this.RecipieId).then((recipieDetails : RecipieDetailsModel) =>{ 
-      this.recipieDetails = recipieDetails;
+    //this.recipieService.GetRecipieDetailsById(this.RecipieId).then((recipieDetails : RecipieDetailsModel) =>{ 
+      //this.recipieDetails = recipieDetails;
      
       this.directions = [];
       for(let i=0; i<this.recipieDetails.Directions.length;i++)
@@ -59,10 +61,10 @@ export class RecipieDetails {
           })
         }
       }
-      for(let i=0; i<this.recipieDetails.PhotosList.length;i++)
+      for(let i=0; i<this.recipieDetails.Images.length;i++)
       {
-        if(this.recipieDetails.PhotosList[i].isPrimary)
-          this.primaryImage = this.recipieDetails.PhotosList[i].s3Url
+        if(this.recipieDetails.Images[i].Order==0)
+          this.primaryImage = this.recipieDetails.Images[i].URL
       }
       this.storage.get('FullLookUp').then((val) => {    
         if(val.length > 0){
@@ -88,8 +90,8 @@ export class RecipieDetails {
             }
           }
         }
-      })
-    });
+      });
+
   }
 
   VideoPlayClick(){
@@ -117,6 +119,10 @@ export class RecipieDetails {
 
   CloseAddNewRecipie(){
     this.IsAddNewRecipie = false;
+  }
+
+  onModelChange(event){
+    alert(JSON.stringify(event));
   }
 
   StylingClick(){

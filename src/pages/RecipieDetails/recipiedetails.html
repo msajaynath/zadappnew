@@ -78,8 +78,15 @@
     <div *ngIf ="ShowItem == 3 && this.IsAddNewRecipie" class="odd" style="padding: 3%;">
       <ion-item no-lines style="background-color: darkseagreen;">
         <span style="text-align: center;display: block"> Tap to add your rating</span>
-        <rating style="color: #ffb400;height: 5%;display: block;text-align: center;margin-right: 10%;" [(ngModel)] = addReview.ReviewRating
-          readOnly="true" max="5"></rating>
+        
+          <rating [(ngModel)]="addReview.ReviewRating" style="color: #ffb400;height: 5%;display: block;text-align: center;margin-right: 10%;"
+        readOnly="false" 
+        max="5" 
+        emptyStarIconName="star-outline" 
+        halfStarIconName="star-half" 
+        starIconName="star" 
+        nullable="false" 
+        (ngModelChange)="onModelChange($event)"></rating>
       </ion-item>
       <ion-item no-lines>
         <ion-label floating>Comments</ion-label>
@@ -109,15 +116,19 @@
   
   <ion-list no-lines>
    <ion-item>
-      <ion-label class="ListHeading">Photos({{recipieDetails.PhotosList.length}})</ion-label>
+      <ion-label class="ListHeading">Photos({{recipieDetails.Images.length}})</ion-label>
    </ion-item>
   </ion-list> 
   <ion-item class="AddAllIngredent">
     <ion-scroll scrollX="true"  class="item" >
       <ion-row>
-        <ion-col  width-33 ><img (click) = "VideoPlayClick()" src="assets/search/category.png"/></ion-col>
-        <ion-col *ngFor="let item of recipieDetails.PhotosList" width-33  >
-          <img src={{item.s3Url}} imageViewer />
+        
+        <ion-col *ngFor="let item of recipieDetails.Images" width-33  >
+          <ion-card>
+            <ion-card-content style="padding: 4px;">
+              <img src={{item.URL}} imageViewer />
+            </ion-card-content>
+          </ion-card>
         </ion-col>
       </ion-row>
     </ion-scroll>
